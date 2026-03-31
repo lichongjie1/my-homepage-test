@@ -1,32 +1,32 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Sparkles, Heart, Zap } from 'lucide-react';
+import { Phone, Mail, MessageCircle } from 'lucide-react';
 
-const personalInfo = [
+const contactInfo = [
   {
-    title: '目前在做',
-    content: '想用 AI 做一些抖音内容',
-    icon: <Sparkles className="text-red-500 w-6 h-6" />,
-    description: '专注于将前沿 AI 技术与短视频内容深度结合，探索内容创作的新边界。'
+    title: '电话号码',
+    content: '17786296370',
+    icon: <Phone className="text-red-500 w-6 h-6" />,
+    description: '工作时间：周一至周五 9:00-18:00'
   },
   {
-    title: '兴趣方向',
-    content: 'AI 应用、健身',
-    icon: <Heart className="text-red-500 w-6 h-6" />,
-    description: '在技术研究之余，也注重身心平衡，追求高效的训练与健康的生活方式。'
+    title: '邮箱',
+    content: 'lcj20011004@outlook.com',
+    icon: <Mail className="text-red-500 w-6 h-6" />,
+    description: '邮件通常会在24小时内回复'
   },
   {
-    title: '个人特点',
-    content: '喜欢把复杂的问题简单化',
-    icon: <Zap className="text-red-500 w-6 h-6" />,
-    description: '擅长从纷繁的信息中提取核心，以最通俗易懂的方式传达复杂的逻辑。'
+    title: '微信号',
+    content: 'lichongjie',
+    icon: <MessageCircle className="text-red-500 w-6 h-6" />,
+    description: '添加时请注明您的来意'
   }
 ];
 
-export function AboutSection() {
+export function ContactSection() {
   return (
-    <section id="about" className="py-24 px-6 relative overflow-hidden">
+    <section id="contact" className="py-24 px-6 relative overflow-hidden">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col items-center mb-16">
           <motion.h2
@@ -35,7 +35,7 @@ export function AboutSection() {
             viewport={{ once: true }}
             className="text-3xl md:text-5xl font-bold mb-4 tracking-tight text-white"
           >
-            关于我
+            联系方式
           </motion.h2>
           <motion.div
             initial={{ width: 0 }}
@@ -46,7 +46,7 @@ export function AboutSection() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {personalInfo.map((item, index) => (
+          {contactInfo.map((item, index) => (
             <motion.div
               key={item.title}
               initial={{ opacity: 0, y: 30 }}

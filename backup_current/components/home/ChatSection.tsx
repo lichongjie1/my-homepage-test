@@ -13,100 +13,34 @@ type Message = {
   timestamp: Date;
 };
 
-const SYSTEM_PROMPT = `你是李重节的数字分身，用来在个人主页里回答访客关于李重节的问题。
-
-你的任务：
-- 介绍李重节是谁
-- 回答和李重节有关的问题
-- 帮访客了解李重节最近在做什么、做过什么、怎么联系李重节
-
-关于李重节：
-- 名字：李重节
-- 最近在做：AI主页创作
-- 擅长或长期关注：AI最新科技
-- 联系方式：电话号码 17786296370，邮箱 lcj20011004@outlook.com，微信号 lichongjie
-
-说话方式：
-- 语气：你好，我是李重节，我是一名AI内容创作者。
-- 回答尽量：简洁 / 真诚 / 人话一点 / 不装专家
-
-边界：
-- 不要编造李重节没做过的经历
-- 不要假装知道李重节没提供的信息
-- 不知道时要明确说不知道，并建议访客通过联系方式进一步确认`;
-
-const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions";
-const OPENROUTER_API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY || "";
-const MODEL_NAME = "stepfun/step-3.5-flash:free";
-
-const callOpenRouterAPI = async (messages: { role: string; content: string }[]): Promise<string> => {
-  try {
-    const response = await fetch(OPENROUTER_API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${OPENROUTER_API_KEY}`
-      },
-      body: JSON.stringify({
-        model: MODEL_NAME,
-        messages: [
-          { role: "system", content: SYSTEM_PROMPT },
-          ...messages
-        ],
-        temperature: 0.7,
-        max_tokens: 500
-      })
-    });
-
-    console.log("API response status:", response.status);
-    
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("API error response:", errorText);
-      throw new Error(`API request failed: ${response.status} - ${errorText}`);
-    }
-
-    const data = await response.json();
-    console.log("API response data:", data);
-    return data.choices[0].message.content;
-  } catch (error) {
-    console.error("OpenRouter API error:", error);
-    
-    // 降级方案：使用本地知识库回答
-    const userMessage = messages[messages.length - 1];
-    if (userMessage && userMessage.role === 'user') {
-      return getFallbackResponse(userMessage.content);
-    }
-    
-    return "抱歉，暂时无法连接到大模型，请稍后再试。";
-  }
+const KNOWLEDGE_BASE = {
+  identity: "我是一名内容策划，专门研究如何将 AI 应用到抖音等内容平台上。",
+  currentWork: "我最近正在搭建自己的个人主页和作品集，同时也尝试用 AI 工具产出更有创意的抖音视频。",
+  skills: "我的核心能力在于内容表达、AI 应用场景探索以及知识体系的整理。",
+  contact: "你可以通过抖音直接私信我，或者关注我正在建设的作品集，在那里我会分享更多联系方式。",
+  works: "目前主要在抖音进行内容实验和 AI 应用案例分享，更多体系化的作品正在整理中，敬请期待！"
 };
 
-// 降级方案：本地知识库回答
-const getFallbackResponse = (input: string): string => {
+const getResponse = (input: string): string => {
   const query = input.toLowerCase();
-  
+
   if (query.includes('你谁') || query.includes('身份') || query.includes('职业')) {
-    return "你好，我是李重节，我是一名AI内容创作者。";
+    return KNOWLEDGE_BASE.identity;
   }
-  
   if (query.includes('做什么') || query.includes('目前') || query.includes('最近')) {
-    return "我最近在做AI主页创作。";
+    return KNOWLEDGE_BASE.currentWork;
   }
-  
   if (query.includes('擅长') || query.includes('方向') || query.includes('能力') || query.includes('特长')) {
-    return "我擅长或长期关注AI最新科技。";
+    return KNOWLEDGE_BASE.skills;
   }
-  
   if (query.includes('联系') || query.includes('找到') || query.includes('沟通')) {
-    return "你可以通过电话 17786296370、邮箱 lcj20011004@outlook.com 或微信 lichongjie 联系我。";
+    return KNOWLEDGE_BASE.contact;
   }
-  
   if (query.includes('作品') || query.includes('案例') || query.includes('视频')) {
-    return "我正在创作AI主页，更多作品敬请期待。";
+    return KNOWLEDGE_BASE.works;
   }
-  
-  return "这个问题我不知道答案，建议你通过我的联系方式进一步确认。";
+
+  return "这个问题超出了我目前的知识范围，欢迎直接联系 Jesse 了解更多。";
 };
 
 export function ChatSection() {
@@ -132,7 +66,7 @@ export function ChatSection() {
     }
   }, [messages, isTyping]);
 
-  const handleSend = async () => {
+  const handleSend = () => {
     if (!input.trim()) {
       setErrorShake(true);
       setTimeout(() => setErrorShake(false), 500);
@@ -150,41 +84,17 @@ export function ChatSection() {
     setInput('');
     setIsTyping(true);
 
-    try {
-      // Check if API key is available
-      if (!OPENROUTER_API_KEY) {
-        throw new Error("API key not configured");
-      }
-
-      // Convert messages to API format (OpenRouter requires lowercase roles)
-      const apiMessages = messages.map(msg => ({
-        role: msg.role === 'user' ? 'user' : 'assistant',
-        content: msg.content
-      }));
-      apiMessages.push({ role: 'user', content: input });
-
-      // Call OpenRouter API
-      const botResponseContent = await callOpenRouterAPI(apiMessages);
-
+    // Simulate bot reply delay
+    setTimeout(() => {
       const botResponse: Message = {
         id: (Date.now() + 1).toString(),
         role: 'bot',
-        content: botResponseContent,
+        content: getResponse(userMessage.content),
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, botResponse]);
-    } catch (error) {
-      console.error("Error sending message:", error);
-      const errorResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'bot',
-        content: "抱歉，发送消息时出现错误，请稍后再试。",
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, errorResponse]);
-    } finally {
       setIsTyping(false);
-    }
+    }, 1000);
   };
 
   return (

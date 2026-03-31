@@ -1,32 +1,32 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Sparkles, Heart, Zap } from 'lucide-react';
+import { Cpu, Bot, Video } from 'lucide-react';
 
-const personalInfo = [
+const worksInfo = [
   {
-    title: '目前在做',
-    content: '想用 AI 做一些抖音内容',
-    icon: <Sparkles className="text-red-500 w-6 h-6" />,
-    description: '专注于将前沿 AI 技术与短视频内容深度结合，探索内容创作的新边界。'
+    title: 'AI应用',
+    content: '智能工具开发',
+    icon: <Cpu className="text-red-500 w-6 h-6" />,
+    description: '开发基于AI的智能应用工具，提升工作效率和用户体验。'
   },
   {
-    title: '兴趣方向',
-    content: 'AI 应用、健身',
-    icon: <Heart className="text-red-500 w-6 h-6" />,
-    description: '在技术研究之余，也注重身心平衡，追求高效的训练与健康的生活方式。'
+    title: 'AI智能体定制',
+    content: '个性化AI助手',
+    icon: <Bot className="text-red-500 w-6 h-6" />,
+    description: '根据不同场景定制专属AI智能体，提供个性化服务。'
   },
   {
-    title: '个人特点',
-    content: '喜欢把复杂的问题简单化',
-    icon: <Zap className="text-red-500 w-6 h-6" />,
-    description: '擅长从纷繁的信息中提取核心，以最通俗易懂的方式传达复杂的逻辑。'
+    title: 'AI视频内容创作',
+    content: '短视频制作',
+    icon: <Video className="text-red-500 w-6 h-6" />,
+    description: '利用AI技术创作高质量短视频内容，探索内容创新。'
   }
 ];
 
-export function AboutSection() {
+export function WorksSection() {
   return (
-    <section id="about" className="py-24 px-6 relative overflow-hidden">
+    <section id="works" className="py-24 px-6 relative overflow-hidden">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col items-center mb-16">
           <motion.h2
@@ -35,7 +35,7 @@ export function AboutSection() {
             viewport={{ once: true }}
             className="text-3xl md:text-5xl font-bold mb-4 tracking-tight text-white"
           >
-            关于我
+            我的作品
           </motion.h2>
           <motion.div
             initial={{ width: 0 }}
@@ -46,7 +46,7 @@ export function AboutSection() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {personalInfo.map((item, index) => (
+          {worksInfo.map((item, index) => (
             <motion.div
               key={item.title}
               initial={{ opacity: 0, y: 30 }}
