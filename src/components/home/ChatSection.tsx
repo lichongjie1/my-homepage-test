@@ -114,7 +114,7 @@ export function ChatSection() {
     {
       id: 'initial',
       role: 'bot',
-      content: '你好！我是 Jesse 的数字分身。你可以问我关于他的职业、最近在做什么或者怎么联系他。',
+      content: '你好！我是李重节的数字分身。你可以问我关于他的职业、最近在做什么或者怎么联系他。',
       timestamp: new Date(),
     },
   ]);
