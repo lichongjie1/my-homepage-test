@@ -151,6 +151,11 @@ export function ChatSection() {
     setIsTyping(true);
 
     try {
+      console.log("=== 开始发送消息 ===");
+      console.log("用户输入:", input);
+      console.log("API密钥是否存在:", !!OPENROUTER_API_KEY);
+      console.log("API密钥前20位:", OPENROUTER_API_KEY ? OPENROUTER_API_KEY.substring(0, 20) + "..." : "无");
+      
       // Check if API key is available
       if (!OPENROUTER_API_KEY) {
         throw new Error("API key not configured");
@@ -162,9 +167,12 @@ export function ChatSection() {
         content: msg.content
       }));
       apiMessages.push({ role: 'user', content: input });
+      
+      console.log("发送到API的消息:", apiMessages);
 
       // Call OpenRouter API
       const botResponseContent = await callOpenRouterAPI(apiMessages);
+      console.log("API返回内容:", botResponseContent);
 
       const botResponse: Message = {
         id: (Date.now() + 1).toString(),
@@ -178,7 +186,7 @@ export function ChatSection() {
       const errorResponse: Message = {
         id: (Date.now() + 1).toString(),
         role: 'bot',
-        content: "抱歉，发送消息时出现错误，请稍后再试。",
+        content: `API调用失败: ${error instanceof Error ? error.message : String(error)}`,
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorResponse]);
